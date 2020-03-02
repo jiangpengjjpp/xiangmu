@@ -1,0 +1,32 @@
+
+
+    *{
+        width: 0px;
+        height: 0px;
+    }
+   
+
+    .all{
+        width: 1920px;
+        height: 3638px;
+       
+    }
+
+
+    .w{
+        width: 1182px;
+        margin: 0 auto;
+    }
+
+    .head{
+        height: 40px;
+        background-color: #262626;
+    }
+    .header{
+        height: 81px;
+        
+    }
+   
+   
+
+
