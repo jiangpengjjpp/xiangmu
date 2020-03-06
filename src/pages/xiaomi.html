@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../js/index.js">
  
     <link rel="stylesheet" href="../lib/swiper/css/swiper.css">
+ 
 
 </head>
 
@@ -71,6 +72,45 @@
                 
             </div>
         </div>
+    </div>
+    <div class="nav_top" container>
+        <ul>
+            <li>选项1</li>
+            <li>选项2</li>
+            <li>选项3</li>
+            <li>选项4</li>
+            <li>选项5</li>
+            <li>选项6</li>
+            <li>选项7</li>
+        </ul>
+    </div>
+    <div class="nav_box">
+
+        <div class="container">
+              <ul>
+              <li>
+              <div>
+                  <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/41c566d825a3ae3b5751a78d4c7cffdb.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
+              </div>
+              <p class="title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;小米手机</p>
+              <span class="price">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2999</span>
+
+              </li>
+                </ul>
+                <ul>
+                    <li>
+                    <div>
+                        <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/41c566d825a3ae3b5751a78d4c7cffdb.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
+                    </div>
+                    <p class="title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;小米手机</p>
+                    <span class="price">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2999</span>
+      
+                    </li>
+                      </ul>
+
+        </div>
+    
+
     </div>
 
     <!-- banner -->
@@ -482,18 +522,20 @@
 
 
  <script src="../lib/swiper/js/swiper.js"></script>
+ <script src="../lib/jquery/dist/jquery.min.js"></script>
+ 
  <script>        
     var mySwiper = new Swiper ('.swiper-container', {
         speed:1200,
   autoplay : {
-    delay:2000
+    delay: 2000
   },
 
 
-      loop: true, // 循环模式选项
+      loop: true, 
  
       
-      // 如果需要前进后退按钮
+
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
@@ -504,13 +546,71 @@
      
     },
       autoplay :true
-  
-    
-    
-    })        
-    </script>
- 
+    })  
+    getList()
 
+    function getList() {
+      $.ajax({
+        url: '../lib/nav_top.json',
+        dataType: 'json',
+        success: function (res) {
+          console.log(res)
+
+          let str = ''
+
+
+          res.forEach(item => {
+            str += `<li>${ item.name }</li>`
+          })
+
+
+          $('.nav_top > ul')
+            .html(str)
+            .on({
+              mouseenter: () => $('.nav_box').stop().slideDown(),
+              mouseleave: () => $('.nav_box').stop().slideUp()
+            })
+            .children('li') 
+            .on('mouseover', function () {
+  
+              const index = $(this).index()
+
+              const list = res[index].list
+  
+              let str = ''
+
+ 
+              list.forEach(item => {
+                str += `
+                  <li>
+                    <div>
+                      <img src="${ item.list_url }" alt="">
+                    </div>
+                    <p class="title">${ item.list_name }</p>
+                    <span class="price">${ item.list_price }</span>
+                  </li>
+                `
+              })
+
+    
+              $('.nav-box > ul').html(str)
+            })
+
+          $('.nav-box')
+            .on({
+              mouseover: function () { $(this).finish().show() },
+              mouseout: function () { $(this).finish().slideUp() }
+            })
+             .children('li')
+             .on('mouseover',function(){
+                 const index =$(this).index()
+             })
+
+        }
+      })
+    }
+ 
+</script>
 
 </body>
 

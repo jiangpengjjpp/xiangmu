@@ -1,26 +1,27 @@
-      
-  var mySwiper = new Swiper ('.swiper-container', {
-    direction: 'vertical', // 垂直切换选项
-    loop: true, // 循环模式选项
-    
-    // 如果需要分页器
-    pagination: {
-      el: '.swiper-pagination',
-    },
-    
-    // 如果需要前进后退按钮
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    
-    // 如果需要滚动条
-    scrollbar: {
-      el: '.swiper-scrollbar',
-    },
-  })    
-  
-  window.onload = function() {
-  
-  }
-
+$('#btn').on('click', e => {
+	e.preventDefault()
+	// var username = $('#username').val()
+	// var password = $('#password').val()
+	$.ajax({
+		url: '/login',
+		type: 'POST',
+		dataType: 'json',
+		data: $('#login').serialize(),
+		success: function(res) {
+			if (res.code === 1) {
+				console.log(res)
+				document.cookie = `username=${res.username}`
+				window.location.href = './index.html'
+			} else {
+				$('.alert')
+					.addClass('login-show tada animated')
+					.children()
+					.html(res.message)
+				$('#password').val('')
+			}
+		},
+		error: function(res) {
+			window.location.href = './login.html'
+		}
+	})
+})

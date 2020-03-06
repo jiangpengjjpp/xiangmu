@@ -1,32 +1,27 @@
-
-
-    *{
-        width: 0px;
-        height: 0px;
-    }
-   
-
-    .all{
-        width: 1920px;
-        height: 3638px;
-       
-    }
-
-
-    .w{
-        width: 1182px;
-        margin: 0 auto;
-    }
-
-    .head{
-        height: 40px;
-        background-color: #262626;
-    }
-    .header{
-        height: 81px;
-        
-    }
-   
-   
-
-
+$('#btn').on('click', e => {
+	e.preventDefault()
+	// var username = $('#username').val()
+	// var password = $('#password').val()
+	$.ajax({
+		url: '/login',
+		type: 'POST',
+		dataType: 'json',
+		data: $('#login').serialize(),
+		success: function(res) {
+			if (res.code === 1) {
+				console.log(res)
+				document.cookie = `username=${res.username}`
+				window.location.href = './index.html'
+			} else {
+				$('.alert')
+					.addClass('login-show tada animated')
+					.children()
+					.html(res.message)
+				$('#password').val('')
+			}
+		},
+		error: function(res) {
+			window.location.href = './login.html'
+		}
+	})
+})

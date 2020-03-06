@@ -31,6 +31,7 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "g": "^2.0.1",
     "jquery": "^3.4.1",
     "swiper": "^5.3.1"
   }

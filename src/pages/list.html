@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="../lib/pagination/pagination.css">
+  <link rel="stylesheet" href="../sass/list.css">
+</head>
+<body>
+
+  <!-- 分页器 -->
+  <div class="pagi m-style"></div>
+
+  <!-- 商品列表 -->
+  <div class="goodsList">
+    <ul>
+      <li>
+        <img src="https://img.alicdn.com/bao/uploaded/https://img.alicdn.com/imgextra/i4/2251059038/O1CN01QedTp12GdSE17VuKI_!!2251059038.jpg_q60.jpg_.webp" alt="">
+        <p>名称</p>
+      </li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>9</li>
+      <li>10</li>
+      <li>11</li>
+      <li>12</li>
+      <li>13</li>
+    </ul>
+  </div>
+
+
+  <script src="../lib/jquery/dist/jquery.min.js"></script>
+  <script src="../lib/pagination/pagination.js"></script>
+  <script>
+    /*
+      列表页
+        1. 请求数据渲染就可以了
+        2. 点击每一个商品的时候， 把属于这个商品的数据存储到 localStorage 里面
+          => 为了在商品详情页面的时候使用
+          => 点击事件(事件委托), 委托给外面的 ul
+          => 在点击事件里面找到渲染当前这个 li 的数据
+            -> 提前把数组保存出来
+            -> 在请求回来的时候就把数组保存出来
+            -> 在渲染 li 的时候, 就把数据的 id 渲染在 li 的身上
+        3. 把找到的数据存储到 lcoalStorage 里面
+          => 存储在 localStorage 里面就可以跨页面通讯了
+          => 当我跳转到详情页面的时候, 就知道是点击哪一个商品来到的详情页面
+        4. 跳转到详情页面
+          => window.location.href 进行跳转
+    */
+
+    // 准备两个变量
+    let currPage = 1
+    let flag = true
+    // 准备一个变量接收数组
+    let list = []
+
+    getList()
+    function getList() {
+      $.ajax({
+        url: '/dm',
+        data: {
+          keyword: '',
+          cty: '',
+          ctl: '演唱会',
+          sctl: '',
+          tsg: 0,
+          st: '',
+          et: '',
+          order: 1,
+          pageSize: 30,
+          currPage: currPage,
+          tn: ''
+        },
+        dataType: 'json',
+        success: function (res) {
+          // 执行渲染页面的函数
+          bindHtml(res.pageData.resultData)
+
+          // 执行渲染分页器的函数
+          flag && bindPagi(res.pageData.totlaPage)
+
+          // 把数组保存以下
+          list = res.pageData.resultData
+        }
+      })
+    }
+
+    function bindHtml(list) {
+      // 渲染页面
+      // console.log(list)
+      let str = ''
+      list.forEach(item => {
+        str += `
+          <li data-id="${ item.id }">
+            <img src="${ item.verticalPic }" alt="">
+            <p>${ item.name }</p>
+          </li>
+        `
+      })
+      $('.goodsList > ul').html(str)
+    }
+
+    function bindPagi(totalPage) {
+      // 关闭开关
+      flag = false
+
+      $('.pagi').pagination({
+        pageCount: totalPage, // 总页数
+        current: 1, // 当前页
+        jump: true,
+        coping: true,
+        homePage: '首页', // 首页按钮的文本
+        endPage: '末页', // 末页按钮的文本
+        prevContent: '上页',
+        nextContent: '下页',
+        callback: function (api) { // 当你切换页面的时候会触发
+          // 每次执行的时候改变一下全局 currPage
+          currPage = api.getCurrent()
+
+          // 从新执行以下 getList()
+          getList()
+        }
+      })
+    }
+
+    // 2. 事件委托的形式给每一个 li 添加点击事件
+    $('.goodsList > ul').on('click', 'li', function () {
+      // this 就是你点击的那一个 li
+      // console.log(this)
+      // 找到渲染这个 li 的数据
+      // 从 list 数组里面找到这个数据
+      // 点击 li 的时候, 拿到自己身上的 id 属性
+      const id = $(this).data('id')
+
+      // 2. 去到 list 这个数组里面找到一个 id 对应的数据
+      //   这个数据就是渲染这个 li 的数据
+      let data = null
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].id === id) {
+          data = list[i]
+          break
+        }
+      }
+      // console.log(data) // 我要找到的渲染当前这个 li 的数据
+
+      // 3. 把找到的数据存储到 localStorage 里面
+      //   为了详情页面使用
+      localStorage.setItem('goodsInfo', JSON.stringify(data))
+
+      // 4. 跳转页面
+      window.location.href = './detail.html'
+    })
+  </script>
+</body>
+</html>

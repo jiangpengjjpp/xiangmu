@@ -720,3 +720,40 @@ b,strong{ font-weight: normal;}
     font-weight: normal;
     font-family: "楷体";
 }
+.nav_top{
+ border: 1px solid #333
+     
+
+
+}
+.nav_top>ul{
+   display:flex;
+
+}
+.nav_top>ul>li{
+    flex:1;
+    display:flex;
+   
+}
+.nav_box{
+  border-top:1px solid #333;
+  border-bottom: 1px solid #333;
+  display: none;
+}
+.nav_box>ul{
+    display: flex;
+    
+}
+.nav_box>ul>li{
+    flex: 1;
+    align-items: center;
+    float: left;
+ 
+}
+.nav_box>ul>li>img{
+    width: 160px;
+    height: 110px;
+    display: block;
+    float: left;
+
+}
